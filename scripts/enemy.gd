@@ -1,0 +1,62 @@
+extends CharacterBody2D
+
+const SPEED := 80.0
+const GRAVITY := 980.0
+
+signal player_hit
+
+@onready var visual: Node2D = $Visual
+@onready var edge_ray: RayCast2D = $EdgeRay
+@onready var hitbox: Area2D = $Hitbox
+@onready var stomp_sound: AudioStreamPlayer = $StompSound
+
+var direction := -1.0
+var dead := false
+var hurt_cooldown := 0.0
+var _time := randf() * TAU
+
+func _physics_process(delta: float) -> void:
+	if dead:
+		return
+	_time += delta
+	visual.scale.y = 1.0 + sinf(_time * 8.0) * 0.08
+
+	if not is_on_floor():
+		velocity.y = minf(velocity.y + GRAVITY * delta, 1200.0)
+	else:
+		velocity.y = 0.0
+		if not edge_ray.is_colliding():
+			_turn()
+
+	velocity.x = direction * SPEED
+	move_and_slide()
+
+	if is_on_wall():
+		_turn()
+
+	if hurt_cooldown > 0.0:
+		hurt_cooldown -= delta
+		return
+
+	for body in hitbox.get_overlapping_bodies():
+		if body is CharacterBody2D:
+			if body.velocity.y > 40.0 and body.global_position.y < global_position.y - 12.0:
+				_die()
+				body.bounce()
+			else:
+				player_hit.emit()
+				hurt_cooldown = 0.6
+
+func _turn() -> void:
+	direction = -direction
+	edge_ray.position.x = 16.0 * direction
+
+func _die() -> void:
+	dead = true
+	stomp_sound.play()
+	hitbox.set_deferred("monitoring", false)
+	velocity = Vector2.ZERO
+	var tween := create_tween()
+	tween.tween_property(visual, "scale", Vector2(1.6, 0.12), 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(0.4)
+	tween.tween_callback(queue_free)

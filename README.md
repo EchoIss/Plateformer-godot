@@ -1,6 +1,6 @@
 # Petit Jeu de Plateforme (Godot 4)
 
-Un mini jeu de plateforme au style **cartoon** : personnage avec yeux, squash & stretch exagérés (étirement au saut, écrasement à l'atterrissage, élastique au retour), inclinaison pendant la course, pièces qui tournent et vibrent puis éclatent quand on les ramasse. Déplace-toi, saute de plateforme en plateforme et ramasse les 5 pièces. Si tu tombes, tu réapparaîtras au départ.
+Un mini jeu de plateforme au style **cartoon** avec des animations exagérées, des ennemis écrasables, 2 niveaux, des sons rétro et un double saut.
 
 ## Lancer le jeu
 
@@ -11,7 +11,7 @@ Un mini jeu de plateforme au style **cartoon** : personnage avec yeux, squash & 
 En ligne de commande :
 
 ```sh
-godot --path . 
+godot --path .
 ```
 
 ## Contrôles
@@ -20,10 +20,20 @@ godot --path .
 |---|---|
 | Se déplacer | `Q`/`D` ou `←`/`→` |
 | Sauter | `Espace`, `W` ou `↑` |
+| **Double saut** | Appuyer à nouveau sur sauter en l'air (avec vrille !) |
+
+## Gameplay
+
+- **Pièces** : elles tournent, flottent et éclatent quand on les ramasse. Ramasse-les toutes pour passer au niveau suivant.
+- **Ennemis** : des blobs violets qui patrouillent. **Saute dessus pour les écraser** (squash cartoon garanti), mais évite de les toucher de côté ou tu réapparaîtras au départ !
+- **Chute** : tomber hors de l'écran fait réapparaître au départ du niveau.
+- **2 niveaux** : le niveau 2 a un ciel de coucher de soleil, 6 pièces et 3 ennemis.
 
 ## Structure
 
-- `scenes/main.tscn` — le niveau (plateformes, pièces, zone de chute, HUD)
-- `scripts/player.gd` — déplacement et saut du personnage
-- `scripts/coin.gd` — collecte des pièces
-- `scripts/main.gd` — score, victoire et réapparition
+- `scenes/game.tscn` + `scripts/game.gd` — gestionnaire de jeu (niveaux, score, sons, HUD)
+- `scenes/level_1.tscn`, `scenes/level_2.tscn` — les niveaux
+- `scenes/player.tscn` + `scripts/player.gd` — joueur (déplacement, double saut, squash & stretch)
+- `scenes/enemy.tscn` + `scripts/enemy.gd` — ennemis patrouilleurs écrasables
+- `scenes/coin.tscn` + `scripts/coin.gd` — pièces collectables
+- `sounds/` — les effets sonores rétro

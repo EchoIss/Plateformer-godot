@@ -1,0 +1,236 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/enemy.tscn" id="3"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(1152, 80)
+
+[sub_resource type="RectangleShape2D" id="wall_shape"]
+size = Vector2(20, 648)
+
+[sub_resource type="RectangleShape2D" id="plat_shape"]
+size = Vector2(180, 20)
+
+[sub_resource type="RectangleShape2D" id="plat_med_shape"]
+size = Vector2(200, 20)
+
+[sub_resource type="RectangleShape2D" id="kill_shape"]
+size = Vector2(2000, 60)
+
+[node name="Level1" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.5, 0.8, 0.95, 1)
+
+[node name="Sun" type="Polygon2D" parent="."]
+position = Vector2(1040, 95)
+color = Color(1, 0.9, 0.3, 1)
+polygon = PackedVector2Array(45, 0, 38.97, 22.5, 22.5, 38.97, 0, 45, -22.5, 38.97, -38.97, 22.5, -45, 0, -38.97, -22.5, -22.5, -38.97, 0, -45, 22.5, -38.97, 38.97, -22.5)
+
+[node name="SunHalo" type="Polygon2D" parent="."]
+position = Vector2(1040, 95)
+color = Color(1, 0.95, 0.6, 0.5)
+polygon = PackedVector2Array(60, 0, 51.96, 30, 30, 51.96, 0, 60, -30, 51.96, -51.96, 30, -60, 0, -51.96, -30, -30, -51.96, 0, -60, 30, -51.96, 51.96, -30)
+
+[node name="Cloud" type="Node2D" parent="."]
+position = Vector2(300, 110)
+
+[node name="Puff1" type="Polygon2D" parent="Cloud"]
+color = Color(1, 1, 1, 1)
+polygon = PackedVector2Array(30, 0, 25.98, 15, 15, 25.98, 0, 30, -15, 25.98, -25.98, 15, -30, 0, -25.98, -15, -15, -25.98, 0, -30, 15, -25.98, 25.98, -15)
+
+[node name="Puff2" type="Polygon2D" parent="Cloud"]
+position = Vector2(30, 8)
+scale = Vector2(0.8, 0.8)
+color = Color(1, 1, 1, 1)
+polygon = PackedVector2Array(30, 0, 25.98, 15, 15, 25.98, 0, 30, -15, 25.98, -25.98, 15, -30, 0, -25.98, -15, -15, -25.98, 0, -30, 15, -25.98, 25.98, -15)
+
+[node name="Puff3" type="Polygon2D" parent="Cloud"]
+position = Vector2(-32, 8)
+scale = Vector2(0.7, 0.7)
+color = Color(1, 1, 1, 1)
+polygon = PackedVector2Array(30, 0, 25.98, 15, 15, 25.98, 0, 30, -15, 25.98, -25.98, 15, -30, 0, -25.98, -15, -15, -25.98, 0, -30, 15, -25.98, 25.98, -15)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(576, 620)
+
+[node name="Dirt" type="ColorRect" parent="Ground"]
+offset_left = -576.0
+offset_top = -40.0
+offset_right = 576.0
+offset_bottom = 40.0
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Grass" type="ColorRect" parent="Ground"]
+offset_left = -576.0
+offset_top = -40.0
+offset_right = 576.0
+offset_bottom = -18.0
+color = Color(0.4, 0.75, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("ground_shape")
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(10, 324)
+
+[node name="Visual" type="ColorRect" parent="WallLeft"]
+offset_left = -10.0
+offset_top = -324.0
+offset_right = 10.0
+offset_bottom = 324.0
+color = Color(0.35, 0.5, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("wall_shape")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(1142, 324)
+
+[node name="Visual" type="ColorRect" parent="WallRight"]
+offset_left = -10.0
+offset_top = -324.0
+offset_right = 10.0
+offset_bottom = 324.0
+color = Color(0.35, 0.5, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("wall_shape")
+
+[node name="Platform1" type="StaticBody2D" parent="."]
+position = Vector2(230, 500)
+
+[node name="Wood" type="ColorRect" parent="Platform1"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 10.0
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Top" type="ColorRect" parent="Platform1"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 0.0
+color = Color(0.4, 0.75, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
+shape = SubResource("plat_shape")
+
+[node name="Platform2" type="StaticBody2D" parent="."]
+position = Vector2(450, 400)
+
+[node name="Wood" type="ColorRect" parent="Platform2"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 10.0
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Top" type="ColorRect" parent="Platform2"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 0.0
+color = Color(0.4, 0.75, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
+shape = SubResource("plat_shape")
+
+[node name="Platform3" type="StaticBody2D" parent="."]
+position = Vector2(680, 320)
+
+[node name="Wood" type="ColorRect" parent="Platform3"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 10.0
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Top" type="ColorRect" parent="Platform3"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 0.0
+color = Color(0.4, 0.75, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
+shape = SubResource("plat_shape")
+
+[node name="Platform4" type="StaticBody2D" parent="."]
+position = Vector2(920, 240)
+
+[node name="Wood" type="ColorRect" parent="Platform4"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Top" type="ColorRect" parent="Platform4"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 0.0
+color = Color(0.4, 0.75, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4"]
+shape = SubResource("plat_med_shape")
+
+[node name="Platform5" type="StaticBody2D" parent="."]
+position = Vector2(480, 180)
+
+[node name="Wood" type="ColorRect" parent="Platform5"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 10.0
+color = Color(0.55, 0.38, 0.22, 1)
+
+[node name="Top" type="ColorRect" parent="Platform5"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 0.0
+color = Color(0.4, 0.75, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5"]
+shape = SubResource("plat_shape")
+
+[node name="Player" parent="." instance=ExtResource("1")]
+position = Vector2(120, 520)
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Coin1" parent="Coins" instance=ExtResource("2")]
+position = Vector2(230, 460)
+
+[node name="Coin2" parent="Coins" instance=ExtResource("2")]
+position = Vector2(680, 280)
+
+[node name="Coin3" parent="Coins" instance=ExtResource("2")]
+position = Vector2(920, 200)
+
+[node name="Coin4" parent="Coins" instance=ExtResource("2")]
+position = Vector2(480, 140)
+
+[node name="Coin5" parent="Coins" instance=ExtResource("2")]
+position = Vector2(900, 560)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Enemy1" parent="Enemies" instance=ExtResource("3")]
+position = Vector2(700, 558)
+
+[node name="Enemy2" parent="Enemies" instance=ExtResource("3")]
+position = Vector2(450, 370)
+
+[node name="KillZone" type="Area2D" parent="." groups=["kill_zone"]]
+position = Vector2(576, 780)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillZone"]
+shape = SubResource("kill_shape")
