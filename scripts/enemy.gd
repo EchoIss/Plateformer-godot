@@ -19,10 +19,10 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 	_time += delta
-	visual.scale.y = 1.0 + sinf(_time * 8.0) * 0.08
+	visual.scale.y = 1.0 + sin(_time * 8.0) * 0.08
 
 	if not is_on_floor():
-		velocity.y = minf(velocity.y + GRAVITY * delta, 1200.0)
+		velocity.y = min(velocity.y + GRAVITY * delta, 1200.0)
 	else:
 		velocity.y = 0.0
 		if not edge_ray.is_colliding():
@@ -39,13 +39,15 @@ func _physics_process(delta: float) -> void:
 		return
 
 	for body in hitbox.get_overlapping_bodies():
-		if body is CharacterBody2D:
-			if body.velocity.y > 40.0 and body.global_position.y < global_position.y - 12.0:
-				_die()
-				body.bounce()
-			else:
-				player_hit.emit()
-				hurt_cooldown = 0.6
+		if body == self or not body is CharacterBody2D:
+			continue
+		if body.global_position.y < global_position.y - 16.0:
+			_die()
+			body.bounce()
+			break
+		else:
+			player_hit.emit()
+			hurt_cooldown = 0.6
 
 func _turn() -> void:
 	direction = -direction

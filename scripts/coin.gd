@@ -11,9 +11,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_time += delta * 4.0
-	visual.scale.x = cosf(_time)
-	visual.scale.y = 1.0 + sinf(_time * 0.5) * 0.12
-	visual.position.y = sinf(_time * 0.25) * 4.0
+	visual.scale.x = cos(_time)
+	visual.scale.y = 1.0 + sin(_time * 0.5) * 0.12
+	visual.position.y = sin(_time * 0.25) * 4.0
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is CharacterBody2D:

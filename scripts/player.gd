@@ -8,7 +8,7 @@ const MAX_JUMPS := 2
 const BOUNCE_VELOCITY := -420.0
 
 @onready var visual: Node2D = $Visual
-@onready var body_node: Node2D = $Visual/Body
+@onready var body_node: Node2D = $Visual/Spin
 @onready var jump_sound: AudioStreamPlayer = $JumpSound
 @onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
 
@@ -19,7 +19,7 @@ var was_on_floor := true
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
-		velocity.y = minf(velocity.y + GRAVITY * delta, MAX_FALL)
+		velocity.y = min(velocity.y + GRAVITY * delta, MAX_FALL)
 
 	if Input.is_action_just_pressed("jump") and jumps_left > 0:
 		velocity.y = JUMP_VELOCITY
