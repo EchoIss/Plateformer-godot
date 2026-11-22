@@ -1,11 +1,15 @@
 extends CharacterBody2D
 
-const SPEED := 80.0
+@export var speed := 80.0
+@export var max_hp := 1
+@export var elite := false
+
 const GRAVITY := 980.0
 
 signal player_hit(from_pos: Vector2)
 
 @onready var visual: Node2D = $Visual
+@onready var collision_node: CollisionShape2D = $CollisionShape2D
 @onready var edge_ray: RayCast2D = $EdgeRay
 @onready var hitbox: Area2D = $Hitbox
 @onready var stomp_sound: AudioStreamPlayer = $StompSound
@@ -15,6 +19,21 @@ var direction := -1.0
 var dead := false
 var hurt_cooldown := 0.0
 var _time := randf() * TAU
+
+func _ready() -> void:
+	hp = max_hp
+	if elite:
+		visual.modulate = Color(1.3, 0.7, 1.3)
+		visual.scale *= 1.3
+		_enlarge(collision_node)
+		_enlarge($Hitbox/CollisionShape2D)
+
+func _enlarge(col: CollisionShape2D) -> void:
+	col.shape = col.shape.duplicate()
+	if col.shape is RectangleShape2D:
+		col.shape.size += Vector2(12, 12)
+	elif col.shape is CircleShape2D:
+		col.shape.radius += 6.0
 
 func _physics_process(delta: float) -> void:
 	if dead:
@@ -29,7 +48,7 @@ func _physics_process(delta: float) -> void:
 		if not edge_ray.is_colliding():
 			_turn()
 
-	velocity.x = direction * SPEED
+	velocity.x = direction * speed
 	move_and_slide()
 
 	if is_on_wall():

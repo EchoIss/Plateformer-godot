@@ -5,8 +5,12 @@ signal player_hit(from_pos: Vector2)
 signal slammed(pos: Vector2)
 signal defeated
 
+@export var boss_name := "Roi Slime"
+@export var max_hp := 8
+@export var final := false
+@export var tint := Color(0.5, 0.25, 0.65)
+
 const GRAVITY := 1400.0
-const MAX_HP := 8
 const ENEMY := preload("res://scenes/enemy.tscn")
 
 @onready var visual: Node2D = $Visual
@@ -14,7 +18,7 @@ const ENEMY := preload("res://scenes/enemy.tscn")
 @onready var hit_sound: AudioStreamPlayer = $HitSound
 @onready var slam_sound: AudioStreamPlayer = $SlamSound
 
-var hp := MAX_HP
+var hp := 8
 var dead := false
 var slamming := false
 var was_on_floor := true
@@ -22,6 +26,10 @@ var jump_cooldown := 1.5
 var slam_count := 0
 var _time := 0.0
 var _contact_cooldown := 0.0
+
+func _ready() -> void:
+	hp = max_hp
+	$Visual/Blob.color = tint
 
 func _physics_process(delta: float) -> void:
 	if dead:
@@ -44,7 +52,7 @@ func _physics_process(delta: float) -> void:
 		if jump_cooldown <= 0.0:
 			var f := signf(player.global_position.x - global_position.x)
 			velocity.y = -750.0
-			velocity.x = f * (240.0 if hp > MAX_HP / 2 else 330.0)
+			velocity.x = f * (240.0 if hp > max_hp / 2 else 330.0)
 			slamming = true
 
 	move_and_slide()
@@ -69,8 +77,8 @@ func _do_slam() -> void:
 	slam_sound.play()
 	slammed.emit(global_position)
 	slam_count += 1
-	jump_cooldown = 1.4 if hp > MAX_HP / 2 else 0.9
-	if hp <= MAX_HP / 2 and slam_count % 2 == 0:
+	jump_cooldown = 1.4 if hp > max_hp / 2 else 0.9
+	if hp <= max_hp / 2 and slam_count % 2 == 0:
 		_spawn_minion()
 
 func _spawn_minion() -> void:
@@ -84,7 +92,7 @@ func take_hit(damage: int, from_pos: Vector2) -> void:
 		return
 	hp -= damage
 	hit_sound.play()
-	health_changed.emit(hp, MAX_HP)
+	health_changed.emit(hp, max_hp)
 	var tween := create_tween()
 	tween.tween_property(visual, "modulate", Color(8.0, 8.0, 8.0, 1.0), 0.06)
 	tween.tween_property(visual, "modulate", Color.WHITE, 0.25)

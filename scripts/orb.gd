@@ -12,6 +12,7 @@ const ORB_COLORS := {
 	"knight": Color(0.3, 0.7, 1.0),
 	"wizard": Color(0.8, 0.35, 1.0),
 	"dash": Color(0.3, 0.9, 0.6),
+	"walljump": Color(1.0, 0.6, 0.2),
 }
 
 func _ready() -> void:

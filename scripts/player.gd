@@ -11,6 +11,10 @@ const BOUNCE_VELOCITY := -420.0
 const DASH_SPEED := 950.0
 const DASH_DURATION := 0.2
 const DASH_COOLDOWN := 0.7
+const WALL_SLIDE_MAX := 140.0
+const WALL_JUMP_X := 430.0
+const WALL_JUMP_Y := -460.0
+const WALL_LOCK_TIME := 0.12
 const FIREBALL := preload("res://scenes/fireball.tscn")
 const FORM_COLORS := {
 	"base": Color(0.95, 0.35, 0.4),
@@ -43,10 +47,12 @@ var attack_time := 0.0
 var attacked := {}
 var invulnerable := false
 var has_dash := false
+var has_walljump := false
 var dashing := false
 var dash_time_left := 0.0
 var dash_cooldown := 0.0
 var ghost_timer := 0.0
+var wall_lock := 0.0
 
 func _physics_process(delta: float) -> void:
 	dash_cooldown = maxf(dash_cooldown - delta, 0.0)
@@ -71,21 +77,43 @@ func _physics_process(delta: float) -> void:
 			_squash(Vector2(1.5, 0.6))
 		elif not is_on_floor():
 			velocity.y = min(velocity.y + GRAVITY * delta, MAX_FALL)
-
-	if not dashing and Input.is_action_just_pressed("jump") and jumps_left > 0:
-		velocity.y = JUMP_VELOCITY
-		jumps_left -= 1
-		if was_on_floor:
-			jump_sound.play()
-			_squash(Vector2(0.6, 1.45))
-		else:
+			if has_walljump and is_on_wall_only():
+				var slide_dir := Input.get_axis("move_left", "move_right")
+				if slide_dir != 0.0 and signf(slide_dir) == -signf(get_wall_normal().x) and velocity.y > WALL_SLIDE_MAX:
+					velocity.y = WALL_SLIDE_MAX
+	if not dashing and Input.is_action_just_pressed("jump"):
+		var can_wall := has_walljump and not is_on_floor() and is_on_wall_only()
+		var toward_wall := false
+		var wall_x := 0.0
+		if can_wall:
+			var jump_dir := Input.get_axis("move_left", "move_right")
+			wall_x = signf(get_wall_normal().x)
+			toward_wall = jump_dir != 0.0 and signf(jump_dir) == -wall_x
+		if can_wall and toward_wall:
+			velocity = Vector2(wall_x * WALL_JUMP_X, WALL_JUMP_Y)
+			wall_lock = WALL_LOCK_TIME
+			jumps_left = MAX_JUMPS - 1
+			facing = wall_x
+			spin.scale.x = facing
 			double_jump_sound.play()
-			_squash(Vector2(0.5, 1.5))
+			_squash(Vector2(0.6, 1.4))
 			_spin()
+		elif jumps_left > 0:
+			velocity.y = JUMP_VELOCITY
+			jumps_left -= 1
+			if was_on_floor:
+				jump_sound.play()
+				_squash(Vector2(0.6, 1.45))
+			else:
+				double_jump_sound.play()
+				_squash(Vector2(0.5, 1.5))
+				_spin()
 
 	var direction := Input.get_axis("move_left", "move_right")
 	if not dashing:
-		if direction:
+		if wall_lock > 0.0:
+			wall_lock = maxf(wall_lock - delta, 0.0)
+		elif direction:
 			velocity.x = direction * SPEED
 		else:
 			velocity.x = move_toward(velocity.x, 0.0, SPEED)
@@ -114,7 +142,7 @@ func _physics_process(delta: float) -> void:
 
 	was_on_floor = is_on_floor()
 
-	if direction:
+	if direction and wall_lock <= 0.0:
 		facing = signf(direction)
 		spin.scale.x = facing
 
@@ -130,6 +158,7 @@ func reset(pos: Vector2) -> void:
 	velocity = Vector2.ZERO
 	jumps_left = MAX_JUMPS
 	dashing = false
+	wall_lock = 0.0
 	camera.reset_smoothing()
 	_squash(Vector2(1.6, 0.4))
 

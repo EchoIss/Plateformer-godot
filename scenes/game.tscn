@@ -30,7 +30,15 @@ offset_top = 92.0
 offset_right = 400.0
 offset_bottom = 122.0
 theme_override_font_sizes/font_size = 24
-text = "Clés : 0 / 3"
+text = "Clés : 0 / 6"
+
+[node name="ZoneLabel" type="Label" parent="HUD"]
+offset_left = 20.0
+offset_top = 610.0
+offset_right = 700.0
+offset_bottom = 640.0
+theme_override_font_sizes/font_size = 22
+text = ""
 
 [node name="Message" type="Label" parent="HUD"]
 offset_right = 1152.0
