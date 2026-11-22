@@ -8,6 +8,9 @@ const GRAVITY := 980.0
 const MAX_FALL := 1200.0
 const MAX_JUMPS := 2
 const BOUNCE_VELOCITY := -420.0
+const DASH_SPEED := 950.0
+const DASH_DURATION := 0.2
+const DASH_COOLDOWN := 0.7
 const FIREBALL := preload("res://scenes/fireball.tscn")
 const FORM_COLORS := {
 	"base": Color(0.95, 0.35, 0.4),
@@ -24,6 +27,8 @@ const FORM_COLORS := {
 @onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
 @onready var slash_sound: AudioStreamPlayer = $SlashSound
 @onready var cast_sound: AudioStreamPlayer = $CastSound
+@onready var dash_sound: AudioStreamPlayer = $DashSound
+@onready var camera: Camera2D = $Camera2D
 
 var squash_tween: Tween
 var spin_tween: Tween
@@ -37,12 +42,37 @@ var attack_cooldown := 0.0
 var attack_time := 0.0
 var attacked := {}
 var invulnerable := false
+var has_dash := false
+var dashing := false
+var dash_time_left := 0.0
+var dash_cooldown := 0.0
+var ghost_timer := 0.0
 
 func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y = min(velocity.y + GRAVITY * delta, MAX_FALL)
+	dash_cooldown = maxf(dash_cooldown - delta, 0.0)
 
-	if Input.is_action_just_pressed("jump") and jumps_left > 0:
+	if dashing:
+		dash_time_left -= delta
+		if dash_time_left <= 0.0 or is_on_wall():
+			dashing = false
+		velocity.y = 0.0
+		velocity.x = facing * DASH_SPEED
+		ghost_timer -= delta
+		if ghost_timer <= 0.0:
+			ghost_timer = 0.05
+			_spawn_ghost()
+	else:
+		if Input.is_action_just_pressed("dash") and has_dash and dash_cooldown <= 0.0:
+			dashing = true
+			dash_time_left = DASH_DURATION
+			dash_cooldown = DASH_COOLDOWN
+			ghost_timer = 0.0
+			dash_sound.play()
+			_squash(Vector2(1.5, 0.6))
+		elif not is_on_floor():
+			velocity.y = min(velocity.y + GRAVITY * delta, MAX_FALL)
+
+	if not dashing and Input.is_action_just_pressed("jump") and jumps_left > 0:
 		velocity.y = JUMP_VELOCITY
 		jumps_left -= 1
 		if was_on_floor:
@@ -54,10 +84,11 @@ func _physics_process(delta: float) -> void:
 			_spin()
 
 	var direction := Input.get_axis("move_left", "move_right")
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, SPEED)
+	if not dashing:
+		if direction:
+			velocity.x = direction * SPEED
+		else:
+			velocity.x = move_toward(velocity.x, 0.0, SPEED)
 
 	attack_cooldown = maxf(attack_cooldown - delta, 0.0)
 	if attack_time > 0.0:
@@ -98,6 +129,8 @@ func reset(pos: Vector2) -> void:
 	position = pos
 	velocity = Vector2.ZERO
 	jumps_left = MAX_JUMPS
+	dashing = false
+	camera.reset_smoothing()
 	_squash(Vector2(1.6, 0.4))
 
 func apply_form(kind: String) -> void:
@@ -145,6 +178,19 @@ func _cast() -> void:
 	get_parent().add_child(fireball)
 	fireball.global_position = global_position + Vector2(facing * 18.0, -6.0)
 	_squash(Vector2(1.2, 0.8))
+
+func _spawn_ghost() -> void:
+	var holder := Node2D.new()
+	holder.position = global_position
+	var ghost := ColorRect.new()
+	ghost.position = Vector2(-13, -23)
+	ghost.size = Vector2(26, 46)
+	ghost.color = Color(0.4, 0.9, 1.0, 0.6)
+	holder.add_child(ghost)
+	get_parent().add_child(holder)
+	var tween := create_tween()
+	tween.tween_property(holder, "modulate:a", 0.0, 0.25)
+	tween.tween_callback(holder.queue_free)
 
 func _spin() -> void:
 	if spin_tween:

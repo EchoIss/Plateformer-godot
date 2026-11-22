@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1"]
 [ext_resource type="AudioStreamWAV" path="res://sounds/jump.wav" id="2"]
 [ext_resource type="AudioStreamWAV" path="res://sounds/double_jump.wav" id="3"]
 [ext_resource type="AudioStreamWAV" path="res://sounds/swing.wav" id="4"]
 [ext_resource type="AudioStreamWAV" path="res://sounds/fireball.wav" id="5"]
+[ext_resource type="AudioStreamWAV" path="res://sounds/dash.wav" id="6"]
 
 [sub_resource type="RectangleShape2D" id="player_shape"]
 size = Vector2(26, 46)
@@ -83,6 +84,10 @@ shape = SubResource("weapon_hit_shape")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("player_shape")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+
 [node name="JumpSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2")
 volume_db = -4.0
@@ -98,3 +103,7 @@ volume_db = -4.0
 [node name="CastSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5")
 volume_db = -4.0
+
+[node name="DashSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6")
+volume_db = -5.0

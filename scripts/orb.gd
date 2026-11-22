@@ -11,6 +11,7 @@ var _time := randf() * TAU
 const ORB_COLORS := {
 	"knight": Color(0.3, 0.7, 1.0),
 	"wizard": Color(0.8, 0.35, 1.0),
+	"dash": Color(0.3, 0.9, 0.6),
 }
 
 func _ready() -> void:
@@ -23,7 +24,7 @@ func _process(delta: float) -> void:
 	visual.rotation = sin(_time * 0.5) * 0.3
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is CharacterBody2D:
+	if body.is_in_group("player"):
 		picked.emit(kind)
 		set_deferred("monitoring", false)
 		set_process(false)

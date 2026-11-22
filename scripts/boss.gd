@@ -53,7 +53,7 @@ func _physics_process(delta: float) -> void:
 	_contact_cooldown = maxf(_contact_cooldown - delta, 0.0)
 	if _contact_cooldown <= 0.0:
 		for body in hitbox.get_overlapping_bodies():
-			if body == self or not body is CharacterBody2D:
+			if not body is CharacterBody2D or not body.is_in_group("player"):
 				continue
 			if body.global_position.y < global_position.y - 30.0:
 				take_hit(2, global_position)

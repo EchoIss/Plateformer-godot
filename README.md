@@ -1,45 +1,55 @@
-# Petit Action-Plateformer (Godot 4)
+# Plateformer Godot — Action-Platformer Metroidvania
 
-Un jeu de plateforme d'action au style **cartoon** avec animations exagérées : attaque à l'épée ou à la boule de feu, **transformations**, 3 niveaux, ennemis et un **boss final**.
+Petit jeu de plateforme cartoon fait avec **Godot 4.3** : une grande carte interconnectée à explorer,
+des pouvoirs à débloquer, des clés à trouver, des checkpoints et un boss final.
 
 ## Lancer le jeu
 
-1. Installer [Godot 4.x](https://godotengine.org/download) (version standard, pas besoin de .NET).
-2. Ouvrir Godot → **Import** → sélectionner le fichier `project.godot` de ce dossier.
+1. Ouvrir Godot 4.3 (ou plus récent).
+2. Cliquer sur **Import**, puis sélectionner le fichier `project.godot` de ce dépôt.
 3. Cliquer sur **Play** (F5).
 
-En ligne de commande :
-
-```sh
-godot --path .
-```
-
-## Contrôles
+## Comment jouer
 
 | Action | Touches |
 |---|---|
-| Se déplacer | `Q`/`D` ou `←`/`→` |
-| Sauter / **Double saut** | `Espace`, `W` ou `↑` (×2 en l'air, avec vrille !) |
-| **Attaquer** | `X` ou `J` |
+| Se déplacer | A/D ou ←/→ |
+| Sauter / Double saut | Espace, ↑ ou W |
+| Attaquer | X ou J |
+| Ruée (dash) | Maj, C ou K |
 
-## Gameplay
+## Objectifs
 
-- **Transformations** : attrape un orbe pour te transformer (style Mombo Quest) :
-  - **⚔ Chevalier** (orbe cyan, niveau 1) : coup d'épée en arc qui balaie devant toi
-  - **🪄 Sorcier** (orbe violet, niveau 2) : lance des boules de feu
-  - Le personnage change de couleur avec un squatch cartoon et un son magique
-- **Cœurs** : tu as 3 cœurs. Un contact d'ennemi ou du boss, ou une chute, en coûte 1 (+ invincibilité temporaire). À zéro, le niveau recommence.
-- **Ennemis** : saute dessus pour les écraser, ou attaque-les !
-- **Niveau 3 : BOSS** — le **Roi Slime** (couronne incluse) saute vers toi et claque le sol avec des secousses d'écran. Prends garde à ses slams, saute sur sa tête (2 dégâts !) ou attaque-le (8 PV, barre de vie en bas). Sous la moitié de sa vie, il devient plus rapide et invoque des blobs !
+- **13 pièces** éparpillées dans la carte (surface, hauteurs, grotte secrète).
+- **3 clés cachées** : dans le puits gauche, en haut des plateformes, et sur une corniche secrète accessible avec la ruée.
+- **Débloquer la ruée** : l'orbe vert dans la grotte donne le dash (avec traînée de fantômes !).
+- **Transformations** (comme dans Mombo/Kirby) : orbe cyan → **Chevalier** (attaque à l'épée),
+  orbe violet → **Sorcier** (boules de feu), orbe vert → **Ruée**.
+- Ouvrir la **grande porte** avec les 3 clés pour affronter le **Roi Slime** (8 PV, 2 phases, sauts et écrasements).
+- La victoire s'obtient **uniquement** en battant le boss.
 
 ## Structure
 
-- `scenes/game.tscn` + `scripts/game.gd` — gestionnaire (niveaux, cœurs, transformations, boss, HUD, sons)
-- `scenes/level_1.tscn`, `level_2.tscn` — niveaux ; `level_3.tscn` — arène du boss
-- `scenes/player.tscn` + `scripts/player.gd` — joueur (double saut, attaques, transformations)
-- `scenes/enemy.tscn` + `scripts/enemy.gd` — blobs patrouilleurs écrasables
-- `scenes/boss.tscn` + `scripts/boss.gd` — le Roi Slime (2 phases, minions)
-- `scenes/orb.tscn` + `scripts/orb.gd` — orbes de transformation
-- `scenes/fireball.tscn` + `scripts/fireball.gd` — boules de feu du Sorcier
-- `sounds/` — effets sonores rétro
-- `tests/test_smoke.gd` — test de fumée headless : `godot --headless --path . -s tests/test_smoke.gd`
+```
+project.godot            Config du projet + touches
+scenes/                  Scènes (jeu, joueur, ennemis, boss, carte metroidvania...)
+scripts/                 Logique GDScript
+sounds/                  Sons générés (WAV)
+tests/test_smoke.gd      Tests automatiques headless
+```
+
+## Tests headless
+
+```bash
+godot --headless --path . --import
+godot --headless --path . -s tests/test_smoke.gd
+```
+
+## Progression
+
+1. v1 : mini-plateforme ✓
+2. v2 : style cartoon + animations exagérées ✓
+3. v3 : ennemis, 3 niveaux, sons, double saut ✓
+4. v4 : débogage (tests automatisés) ✓
+5. v5 : action-platformer (attaques, boss, transformations) ✓
+6. **v6 : Metroidvania — une grande carte interconnectée avec plusieurs objectifs** ✓

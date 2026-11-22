@@ -16,7 +16,7 @@ func _process(delta: float) -> void:
 	visual.position.y = sin(_time * 0.25) * 4.0
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is CharacterBody2D:
+	if body.is_in_group("player"):
 		collected.emit()
 		set_process(false)
 		set_deferred("monitoring", false)

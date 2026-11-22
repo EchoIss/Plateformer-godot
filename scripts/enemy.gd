@@ -40,11 +40,12 @@ func _physics_process(delta: float) -> void:
 		return
 
 	for body in hitbox.get_overlapping_bodies():
-		if body == self or not body is CharacterBody2D:
+		if body == self or body.is_in_group("boss") or not body is CharacterBody2D:
 			continue
 		if body.global_position.y < global_position.y - 16.0:
 			_die()
-			body.bounce()
+			if body.has_method("bounce"):
+				body.bounce()
 			break
 		else:
 			player_hit.emit(global_position)
