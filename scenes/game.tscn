@@ -31,3 +31,52 @@ offset_bottom = 448.0
 theme_override_font_sizes/font_size = 64
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Hearts" type="Node2D" parent="HUD"]
+
+[node name="Heart1" type="ColorRect" parent="HUD/Hearts"]
+offset_left = 20.0
+offset_top = 64.0
+offset_right = 42.0
+offset_bottom = 86.0
+color = Color(0.85, 0.15, 0.25, 1)
+
+[node name="Heart2" type="ColorRect" parent="HUD/Hearts"]
+offset_left = 50.0
+offset_top = 64.0
+offset_right = 72.0
+offset_bottom = 86.0
+color = Color(0.85, 0.15, 0.25, 1)
+
+[node name="Heart3" type="ColorRect" parent="HUD/Hearts"]
+offset_left = 80.0
+offset_top = 64.0
+offset_right = 102.0
+offset_bottom = 86.0
+color = Color(0.85, 0.15, 0.25, 1)
+
+[node name="BossBar" type="Node2D" parent="HUD"]
+visible = false
+
+[node name="NameLabel" type="Label" parent="HUD/BossBar"]
+offset_left = 416.0
+offset_top = 582.0
+offset_right = 736.0
+offset_bottom = 606.0
+theme_override_font_sizes/font_size = 16
+text = "Roi Slime"
+horizontal_alignment = 1
+
+[node name="Bg" type="ColorRect" parent="HUD/BossBar"]
+offset_left = 426.0
+offset_top = 610.0
+offset_right = 726.0
+offset_bottom = 632.0
+color = Color(0.12, 0.12, 0.18, 1)
+
+[node name="Fill" type="ColorRect" parent="HUD/BossBar"]
+offset_left = 428.0
+offset_top = 612.0
+offset_right = 724.0
+offset_bottom = 630.0
+color = Color(0.9, 0.25, 0.3, 1)

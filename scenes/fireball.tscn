@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/fireball.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="fireball_shape"]
+radius = 9.0
+
+[node name="Fireball" type="Area2D"]
+script = ExtResource("1")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(1, 0.55, 0.1, 1)
+polygon = PackedVector2Array(10, 0, 7.07, 7.07, 0, 10, -7.07, 7.07, -10, 0, -7.07, -7.07, 0, -10, 7.07, -7.07)
+
+[node name="Core" type="Polygon2D" parent="Visual"]
+scale = Vector2(0.5, 0.5)
+color = Color(1, 0.9, 0.4, 1)
+polygon = PackedVector2Array(10, 0, 7.07, 7.07, 0, 10, -7.07, 7.07, -10, 0, -7.07, -7.07, 0, -10, 7.07, -7.07)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("fireball_shape")
